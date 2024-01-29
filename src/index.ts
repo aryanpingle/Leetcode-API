@@ -1,4 +1,6 @@
 import express from "express";
+import * as RH from "./request-handlers";
+
 const app = express();
 const port = 5500;
 
@@ -24,9 +26,8 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get("/", (req, res) => {
-  res.json("Welcome!");
-});
+app.get("/", RH.homepageRH);
+app.get("/:username/", RH.userProfileRH);
 
 //get user profile details
 
