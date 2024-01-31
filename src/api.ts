@@ -78,7 +78,27 @@ export interface UserDetails {
   }>;
 }
 
-export async function fetchUserProfile(username: string) {
+export type LeetcodeErrorResponse = {
+  /** Incomplete type, needs confirmation */
+  data?: any;
+  errors: Array<{
+    message: string;
+    locations: Array<{
+      line: number;
+      column: number;
+    }>;
+    path: Array<string>;
+    /** Incomplete type, needs confirmation */
+    extensions?: any;
+  }>;
+};
+
+/** Fetch errors result in null, query errors result in a LeetcodeErrorResponse */
+export type LeetcodeAPIResponse<K> = K | LeetcodeErrorResponse | null;
+
+export async function fetchUserProfile(
+  username: string
+): Promise<LeetcodeAPIResponse<UserDetails>> {
   const data = await fetch("https://leetcode.com/graphql", {
     method: "POST",
     headers: {
@@ -93,9 +113,16 @@ export async function fetchUserProfile(username: string) {
     }),
   })
     .then(result => result.json())
+    .then(result => {
+      if ("errors" in result) {
+        return result as LeetcodeErrorResponse;
+      }
+
+      return result.data as UserDetails;
+    })
     .catch(err => {
-      console.error("Error:", err);
-      return { error: err };
+      console.log(err);
+      return null;
     });
 
   return data;
