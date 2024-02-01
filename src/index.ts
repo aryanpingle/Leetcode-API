@@ -27,8 +27,9 @@ app.use(function (req, res, next) {
 });
 
 app.get("/$", RH.homepageRH);
-app.get("/user/:username/?$", RH.userProfileRH);
-app.get("/question/:titleSlug/?$", RH.questionRH);
+app.get("/user/:username/$", RH.userProfileRH);
+app.get("/question/:titleSlug/$", RH.questionRH);
+app.get("/daily/$", RH.dailyQuestionRH);
 
 //get user profile details
 

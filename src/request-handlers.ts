@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { fetchUserProfile } from "./api/user-profile";
 import { fetchQuestion } from "./api/question";
+import { fetchDailyQuestion } from "./api/daily-question";
 
 export const homepageRH: RequestHandler = (req, res) => {
   res.json("Hello! I'm Emu Otori ^-^");
@@ -26,4 +27,8 @@ export const questionRH: RequestHandler = async (req, res) => {
   }
 
   fetchQuestion(titleSlug).then(data => res.json(data));
+};
+
+export const dailyQuestionRH: RequestHandler = async (req, res) => {
+  fetchDailyQuestion().then(data => res.json(data));
 };
