@@ -1,27 +1,15 @@
-import * as queries from "./query-strings";
+import {
+  DifficultyLevel,
+  ErrorResponse,
+  LeetcodeAPIResponse,
+  LeetcodeBadge,
+  SubmissionStatus,
+} from "../leetcode-types";
+import * as queries from "./queries";
 
-export type difficultyType = "All" | "Easy" | "Medium" | "Hard";
-
-/** "Internal Error" usually means the submission is still being judged */
-export type submissionStatus =
-  | "Accepted"
-  | "Wrong Answer"
-  | "Runtime Error"
-  | "Time Limit Exceeded"
-  | "Internal Error";
-
-export interface LeetcodeBadge {
-  id: string;
-  displayName: string;
-  /** URL to badge icon */
-  icon: string;
-  /** YYYY-MM-DD */
-  creationDate: string;
-}
-
-export interface UserDetails {
+export interface UserProfile {
   allQuestionsCount: Array<{
-    difficulty: difficultyType;
+    difficulty: DifficultyLevel;
     count: number;
   }>;
   matchedUser: {
@@ -56,12 +44,12 @@ export interface UserDetails {
     activeBadge: LeetcodeBadge | null;
     submitStats: {
       totalSubmissionNum: Array<{
-        difficulty: difficultyType;
+        difficulty: DifficultyLevel;
         count: number;
         submissions: number;
       }>;
       acSubmissionNum: Array<{
-        difficulty: difficultyType;
+        difficulty: DifficultyLevel;
         count: number;
         submissions: number;
       }>;
@@ -73,31 +61,24 @@ export interface UserDetails {
     title: string;
     titleSlug: string;
     timestamp: string;
-    statusDisplay: submissionStatus;
+    statusDisplay: SubmissionStatus;
     lang: string;
   }>;
   recentAcSubmissionList: Array<{
     title: string;
     titleSlug: string;
     timestamp: string;
-    statusDisplay: submissionStatus;
+    statusDisplay: SubmissionStatus;
     lang: string;
   }>;
 }
-
-export type ErrorResponse = {
-  error: { message: string; path?: Array<string> };
-};
-
-/** Fetch errors result in null, query errors result in a LeetcodeErrorResponse */
-export type LeetcodeAPIResponse<K> = K | ErrorResponse;
 
 /**
  * Makes an asynchronous network request for the user's profile details.
  */
 export async function fetchUserProfile(
   username: string
-): Promise<LeetcodeAPIResponse<UserDetails>> {
+): Promise<LeetcodeAPIResponse<UserProfile>> {
   const data = await fetch("https://leetcode.com/graphql", {
     method: "POST",
     headers: {
@@ -128,7 +109,7 @@ export async function fetchUserProfile(
         return errorResponse;
       }
 
-      return result.data as UserDetails;
+      return result.data as UserProfile;
     })
     .catch(
       err =>

@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
-import * as API from "./api";
+import { fetchUserProfile } from "./api/user-profile";
+import { fetchQuestion } from "./api/question";
 
 export const homepageRH: RequestHandler = (req, res) => {
   res.json("Hello! I'm Emu Otori ^-^");
@@ -7,10 +8,22 @@ export const homepageRH: RequestHandler = (req, res) => {
 
 export const userProfileRH: RequestHandler = async (req, res) => {
   const username = req.params["username"];
+
   if (!username) {
-    res.json({ error: `username = '${username}' is invalid` });
+    res.json({ error: `No username provided` });
     return;
   }
 
-  API.fetchUserProfile(username).then(data => res.json(data));
+  fetchUserProfile(username).then(data => res.json(data));
+};
+
+export const questionRH: RequestHandler = async (req, res) => {
+  const titleSlug = req.params["titleSlug"];
+
+  if (!titleSlug) {
+    res.json({ error: `No titleSlug provided` });
+    return;
+  }
+
+  fetchQuestion(titleSlug).then(data => res.json(data));
 };

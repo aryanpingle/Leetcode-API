@@ -26,8 +26,9 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get("/", RH.homepageRH);
-app.get("/:username/", RH.userProfileRH);
+app.get("/$", RH.homepageRH);
+app.get("/user/:username/?$", RH.userProfileRH);
+app.get("/question/:titleSlug/?$", RH.questionRH);
 
 //get user profile details
 
