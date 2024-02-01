@@ -24,7 +24,7 @@ export interface LeetcodeBadge {
   creationDate: string;
 }
 
-export function logThenReturn<T>(value: T):T {
+export function logThenReturn<T>(value: T): T {
   console.log(value);
   return value;
 }

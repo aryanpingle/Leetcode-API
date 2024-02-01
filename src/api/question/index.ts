@@ -28,7 +28,7 @@ export interface LeetcodeQuestion {
   }>;
   /**
    * TODO: confirm type.
-   * 
+   *
    * Each input in each testcase is joined by a newline (\n).
    * String inputs are wrapped in double quotation marks (").
    * Each testcase is joined by a newline (\n).
@@ -148,7 +148,7 @@ export async function fetchQuestion(
           error: {
             message: `Error while fetching question '${titleSlug}'`,
           },
-        } as ErrorResponse)
+        }) as ErrorResponse
     );
 
   return data;

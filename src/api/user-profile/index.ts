@@ -117,7 +117,7 @@ export async function fetchUserProfile(
           error: {
             message: `Error while fetching user profile ${username}`,
           },
-        } as ErrorResponse)
+        }) as ErrorResponse
     );
 
   return data;

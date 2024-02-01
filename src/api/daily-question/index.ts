@@ -36,7 +36,7 @@ export async function fetchDailyQuestion(): Promise<
           error: {
             message: `Error while fetching daily question`,
           },
-        } as ErrorResponse)
+        }) as ErrorResponse
     );
 
   return data;
