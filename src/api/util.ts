@@ -23,3 +23,8 @@ export interface LeetcodeBadge {
   /** YYYY-MM-DD */
   creationDate: string;
 }
+
+export function logThenReturn<T>(value: T):T {
+  console.log(value);
+  return value;
+}

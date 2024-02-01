@@ -1,4 +1,4 @@
-export const questionQuery = `query ($titleSlug: String!) {
+export const questionQuery = `query getQuestion($titleSlug: String!) {
   question(titleSlug: $titleSlug) {
     questionId
     questionFrontendId

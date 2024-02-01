@@ -1,8 +1,4 @@
-import {
-  DifficultyLevel,
-  ErrorResponse,
-  LeetcodeAPIResponse,
-} from "../leetcode-types";
+import { DifficultyLevel, ErrorResponse, LeetcodeAPIResponse } from "../util";
 import * as queries from "./queries";
 
 export interface LeetcodeQuestion {

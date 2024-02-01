@@ -4,7 +4,7 @@ import {
   LeetcodeAPIResponse,
   LeetcodeBadge,
   SubmissionStatus,
-} from "../leetcode-types";
+} from "../util";
 import * as queries from "./queries";
 
 export interface UserProfile {
