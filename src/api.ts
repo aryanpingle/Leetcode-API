@@ -1,4 +1,4 @@
-import * as queries from "./queries";
+import * as queries from "./query-strings";
 
 export type difficultyType = "All" | "Easy" | "Medium" | "Hard";
 
@@ -76,26 +76,25 @@ export interface UserDetails {
     statusDisplay: submissionStatus;
     lang: string;
   }>;
+  recentAcSubmissionList: Array<{
+    title: string;
+    titleSlug: string;
+    timestamp: string;
+    statusDisplay: submissionStatus;
+    lang: string;
+  }>;
 }
 
-export type LeetcodeErrorResponse = {
-  /** Incomplete type, needs confirmation */
-  data?: any;
-  errors: Array<{
-    message: string;
-    locations: Array<{
-      line: number;
-      column: number;
-    }>;
-    path: Array<string>;
-    /** Incomplete type, needs confirmation */
-    extensions?: any;
-  }>;
+export type ErrorResponse = {
+  error: { message: string; path?: Array<string> };
 };
 
 /** Fetch errors result in null, query errors result in a LeetcodeErrorResponse */
-export type LeetcodeAPIResponse<K> = K | LeetcodeErrorResponse | null;
+export type LeetcodeAPIResponse<K> = K | ErrorResponse;
 
+/**
+ * Makes an asynchronous network request for the user's profile details.
+ */
 export async function fetchUserProfile(
   username: string
 ): Promise<LeetcodeAPIResponse<UserDetails>> {
@@ -115,15 +114,30 @@ export async function fetchUserProfile(
     .then(result => result.json())
     .then(result => {
       if ("errors" in result) {
-        return result as LeetcodeErrorResponse;
+        // Error in the query
+        const errorResponse = {
+          error: {
+            message: result.errors.message,
+          },
+        } as ErrorResponse;
+
+        if ("path" in result.errors) {
+          errorResponse.error.path = result.errors.path;
+        }
+
+        return errorResponse;
       }
 
       return result.data as UserDetails;
     })
-    .catch(err => {
-      console.log(err);
-      return null;
-    });
+    .catch(
+      err =>
+        ({
+          error: {
+            message: `Error while fetching user profile ${username}`,
+          },
+        } as ErrorResponse)
+    );
 
   return data;
 }
