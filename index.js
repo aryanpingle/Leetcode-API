@@ -300,6 +300,76 @@ async function fetchDailyQuestion() {
   return data;
 }
 
+const questionListQuery = `
+query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
+  problemsetQuestionList: questionList(
+    categorySlug: $categorySlug
+    limit: $limit
+    skip: $skip
+    filters: $filters
+  ) {
+      total: totalNum
+      questions: data {
+      acRate
+      difficulty
+      freqBar
+      frontendQuestionId: questionFrontendId
+      isFavor
+      paidOnly: isPaidOnly
+      status
+      title
+      titleSlug
+      topicTags {
+        name
+        id
+        slug
+      }
+      hasSolution
+      hasVideoSolution
+    }
+  }
+}`;
+
+/**
+ * Makes an asynchronous network request for a list of questions.
+ */
+async function fetchQuestionList(skip, limit) {
+  const data = await fetch("https://leetcode.com/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    referrer: "https://leetcode.com",
+    body: JSON.stringify({
+      query: questionListQuery,
+      variables: {
+        categorySlug: "all-code-essentials",
+        skip: skip,
+        limit: limit,
+        filters: {},
+      },
+    }),
+  })
+    .then(result => result.json())
+    .then(result => result.data.problemsetQuestionList)
+    .then(result => {
+      if (result === null || result === undefined) {
+        return {
+          error: {
+            message: `Error while fetching question list`,
+          },
+        };
+      }
+      return result;
+    })
+    .catch(err => ({
+      error: {
+        message: `Error while fetching question list`,
+      },
+    }));
+  return data;
+}
+
 const homepageRH = (req, res) => {
   res.json("Hello! I'm Emu Otori ^-^");
 };
@@ -321,6 +391,15 @@ const questionRH = async (req, res) => {
 };
 const dailyQuestionRH = async (req, res) => {
   fetchDailyQuestion().then(data => res.json(data));
+};
+const questionListRH = async (req, res) => {
+  try {
+    let skip = parseInt(req.params["skip"]);
+    let limit = parseInt(req.params["limit"]);
+    fetchQuestionList(skip, limit).then(data => res.json(data));
+  } catch (e) {
+    res.json({ error: `Invalid invokation, use /?skip=<int>&limit=<int>` });
+  }
 };
 
 const app = express();
@@ -349,6 +428,7 @@ app.get("/$", homepageRH);
 app.get("/user/:username/$", userProfileRH);
 app.get("/question/:titleSlug/$", questionRH);
 app.get("/daily/$", dailyQuestionRH);
+app.get("/question-list/:skip/:limit/", questionListRH);
 //get user profile details
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
