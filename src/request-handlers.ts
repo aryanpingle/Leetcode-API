@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { fetchUserProfile } from "./api/user-profile";
 import { fetchQuestion } from "./api/question";
 import { fetchDailyQuestion } from "./api/daily-question";
+import { fetchQuestionList } from "./api/question-list";
 
 export const homepageRH: RequestHandler = (req, res) => {
   res.json("Hello! I'm Emu Otori ^-^");
@@ -31,4 +32,15 @@ export const questionRH: RequestHandler = async (req, res) => {
 
 export const dailyQuestionRH: RequestHandler = async (req, res) => {
   fetchDailyQuestion().then(data => res.json(data));
+};
+
+export const questionListRH: RequestHandler = async (req, res) => {
+  try {
+    let skip = parseInt(req.params["skip"]);
+    let limit = parseInt(req.params["limit"]);
+
+    fetchQuestionList(skip, limit).then(data => res.json(data));
+  } catch (e: any) {
+    res.json({ error: `Invalid invokation, use /?skip=<int>&limit=<int>` });
+  }
 };

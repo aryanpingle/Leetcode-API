@@ -30,6 +30,7 @@ app.get("/$", RH.homepageRH);
 app.get("/user/:username/$", RH.userProfileRH);
 app.get("/question/:titleSlug/$", RH.questionRH);
 app.get("/daily/$", RH.dailyQuestionRH);
+app.get("/question-list/:skip/:limit/", RH.questionListRH);
 
 //get user profile details
 
